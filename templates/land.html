@@ -1,0 +1,77 @@
+{% load static %}
+<html>
+  <head>
+    {% include "components/head.html" with title="Classistant - Home" %}
+    <style>
+      img{
+        height: 380px;
+      }
+      #carousel{
+        background-color: darkcyan;
+        height: 50%;
+      }
+      .card-content a{
+        color: darkcyan;
+      }
+      .card{
+        height: 550px;
+      }
+      footer {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  color:white;
+  background-color: darkcyan;
+  text-align: center;
+  z-index: 100;
+}
+    </style>
+  </head>
+  <body>
+    {% include "components/navbar.html" with title="Classistant - Home" %}
+    <br /> <p></p>
+    <div id="root"></div>
+    <footer style="position: fixed;letter-spacing: 0.5;">
+        <div class="footer">
+          Made using Django, React, Materialize and SQL by Ashvath Narayanan with passion ❤. 
+        </div>
+      </footer>
+    {% include "components/scripts.html" %}
+    <script type="text/babel">
+      var cards=[
+      {
+          url:"/timetable",image:"card2.png",head:"Time Table Management",text:"Edit and manage your time table."
+
+        },{
+          url:"/courses",image:"card1.png",head:"Course Selection",text:"Explore courses and add preferred courses to your timetable."
+        },{
+          url:"/map",image:"card3.png",head:"Class Geolocation",text:"Locate the buildings in which a course is undertaken."
+
+        }
+      ];
+      class Cards extends React.Component {
+        render() {
+          return (
+            <div className="row" id="carousel">
+              {cards.map((element)=>{
+                return <div class="col s4">
+      <div class="card">
+        <div class="card-image">
+          <img src={"http://127.0.0.1:8000/static/images/"+element.image} />
+          <span class="card-title">Card Title</span>
+        </div>
+        <div class="card-content">
+        <a href={element.url}><h4>{element.head}</h4></a>
+          <p>{element.text}</p>
+        </div>
+      </div>
+    </div>
+              })}</div>
+          );
+        }
+      }
+      ReactDOM.render(<Cards />, document.querySelector("#root"));
+    </script>
+  </body>
+</html>

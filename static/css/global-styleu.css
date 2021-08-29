@@ -1,0 +1,74 @@
+.nav-wrapper {
+  color: black;
+  margin: 0% 3.5%;
+}
+.modal {
+  float: left;
+  height: 50%;
+}
+[type="submit"] {
+  font-family: 'Noto Sans JP', sans-serif;  font-weight: bold;
+  background-color: white;
+  padding: 2%;
+  border: 2px solid darkcyan;
+  cursor: pointer;
+  border-radius: 50px;
+}
+nav {
+  background-color: darkcyan;
+}
+* {
+  font-family: 'Noto Sans JP', sans-serif;}
+label {
+  font-weight: bold;
+}
+b {
+  letter-spacing: 0.5;
+}
+#switch {
+  background-color: white;
+  color: darkcyan;
+  padding: 1% 2%;  
+  cursor: pointer;
+}
+#switch:hover {
+  transition: 0.5s;
+  background-color: darkcyan;
+  border-radius: 5px;
+  color: white;
+}
+#root {
+  padding: 0px 50px;
+  overflow: auto;
+}
+.slot {
+  cursor: pointer;
+}
+center {
+  margin: 5%;
+}
+#mymap {
+  height: 500px;
+}
+.tabs .tab a {
+  color: #008b8b;
+  font-weight: bold;
+}
+tabs .tab a:hover,
+.tabs .tab a.active {
+  background-color: transparent;
+  color: #008b8b;
+}
+.tabs .indicator {
+  background-color: #008b8b;
+}
+#test1 {
+  padding: 0% 0% 20% 0%;
+  height: 250px;
+  background-color: bisque;
+}
+#test2 {
+  padding: 0% 0% 20% 0%;
+  height: 250px;
+  background-color: beige;
+}

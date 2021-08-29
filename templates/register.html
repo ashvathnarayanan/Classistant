@@ -1,0 +1,62 @@
+{% load static %}
+<html>
+  <head>
+    {% include "components/head.html" with title="Classistant - Login" %}
+  <style>
+    body{
+      background-image: linear-gradient( 135deg, #5EFCE8 10%, #736EFE 100%);
+    }
+  </style>
+  </head>
+  <body>
+    <br />
+    <center>
+      <div class="row card" style="text-align: left;">
+        <div class="col l7 hide-on-med-and-down" style="border-right: 1px solid grey;padding-left:10px">
+          <img src="{% static 'images/reg.jpg' %}" width="550" />
+        </div>
+        <div class="col l5 s12" >
+          <h2 style="margin-left:30px ;"> 
+            <i class="material-icons">assistant</i>
+
+             Classistant</h2>
+          <div class="horizontal">
+            <form method="post" action="{% url 'register' %}" class="col s12 m12 l12">
+            <div class="card-stacked">
+              <div class="card-content">
+                <div class="row">
+                    {%csrf_token%}
+                    <div class="input-field">
+                      <i class="material-icons prefix">school</i>
+                      <input id="icon_prefix" type="text" name="rollno" />
+                      <label for="icon_prefix">Roll Number</label>
+                    </div>
+                    <p></p>
+                    <div class="input-field">
+                      <i class="material-icons prefix">person</i>
+                      <input id="icon_prefix" type="text" name="name" />
+                      <label for="icon_prefix">Name</label>
+                    </div>
+                    <p></p>
+                    <div class="input-field">
+                      <i class="material-icons prefix">lock</i>
+                      <input id="icon_telephone" type="password" />
+                      <label for="icon_telephone">Password</label>
+                    </div>
+                </div>
+                <b style="float: right;width: 180px;">Have an account? <a href="{% url 'login' %}"><span id="switch">Login</span></a></b>
+            </div>
+            <div class="card-action">
+                <button type="submit">
+                  <i class="material-icons">east</i>
+                </button>
+            </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href='https://www.freepik.com/vectors/website'>Website vector created by stories - www.freepik.com</a>    </center>
+    {% include "components/scripts.html" %}
+  </body>
+</html>

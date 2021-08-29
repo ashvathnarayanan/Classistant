@@ -1,0 +1,439 @@
+{% load static %}
+{% load tags %}
+<html>
+  <head>
+    {% include "components/head.html" with title="Classistant - Timetable" %}
+    <style>
+      .modal{
+        height: fit-content;
+      }
+      
+    </style>
+  </head>
+  <body>
+    {% include "components/navbar.html" %}
+
+    <div class="card" style="padding: 0px 50px;  margin: 2% 3%;">
+      <br>
+   <h4>Selected courses</h4>
+   <hr>
+      <table >
+      <thead>
+        <th>Course</th>
+        <th>Code</th>
+        <th>Building</th>
+        <th>Faculty</th>
+        <th>Time</th>
+        <th>Class Strength</th>
+        <th>Remove</th>
+      </thead>
+      {% for i in student.classes.all %}
+      <tr>
+        <td>
+          {{i.course.course_name}}
+        </td>
+        <td>
+          {{i.course.course_id}}
+        </td>
+        <td>
+          {{i.building.building_name}}
+        </td>
+        <td>
+          {{i.faculty_name}}
+        </td>
+        <td>
+          <span class="new badge" data-badge-caption="{{i.slot}}"></span> {{i.time}}   
+        </td>
+        <td>
+          {{i.total_students}}
+        </td>
+        <td>
+          <a
+                onclick="removeClass({{i.class_id}});"
+                class="btn-floating btn-small waves-effect waves-light darkcyan"
+                ><i class="material-icons">close</i> </a
+              >
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div id="root"></div>
+  <br />
+
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <h3 id="modalHead"></h3>
+        <form action="" method="POST">
+          <h6>Are you sure about removing this course? </h6>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <input type="submit" value="Yes" class="modal-action waves-effect waves-blue btn-flat">
+
+      </div>
+    </div>
+    <input type="hidden" id="student" value="{{student.classes.all|getSlots}}""> 
+    <input type="hidden" id="rollNo" value="{{student.rollNo}}""> 
+    <script type="text/babel">
+      var slotData = [
+        [
+          "Mon",
+          [
+            ["A1", "L1"],
+            ["F1", "L2"],
+            ["D1", "L3"],
+            ["TB1", "L4"],
+            ["TG1", "L5"],
+            ["-", "L6"],
+            "lunch",
+            ["A2", "L31"],
+            ["F2", "L32"],
+            ["D2", "L33"],
+            ["TB2", "L34"],
+            ["TG2", "L35"],
+            ["S3", "L36"],
+          ],
+        ],
+        [
+          "Tue",
+          [
+            ["B1", "L7"],
+            ["G1", "L8"],
+            ["E1", "L9"],
+            ["TC1", "L10"],
+            ["TAA1", "L11"],
+            ["-", "L12"],
+            "lunch",
+            ["B2", "L37"],
+            ["G2", "L38"],
+            ["E2", "L39"],
+            ["TC2", "L40"],
+            ["TAA2", "L41"],
+            ["V4", "L42"],
+          ],
+        ],
+        [
+          "Wed",
+          [
+            ["C1", "L13"],
+            ["A1", "L14"],
+            ["F1", "L15"],
+            ["V1", "L16"],
+            ["V2", "L17"],
+            ["-", "L18"],
+            "lunch",
+            ["C2", "L43"],
+            ["A2", "L44"],
+            ["F2", "L45"],
+            ["TD2", "L46"],
+            ["TBB2", "L47"],
+            ["V5", "L48"],
+          ],
+        ],
+        [
+          "Thu",
+          [
+            ["D1", "L19"],
+            ["B1", "L20"],
+            ["G1", "L21"],
+            ["TE1", "L22"],
+            ["TCC1", "L23"],
+            ["-", "L24"],
+            "lunch",
+            ["D2", "L49"],
+            ["B2", "L50"],
+            ["G2", "L51"],
+            ["TE2", "L52"],
+            ["TCC2", "L53"],
+            ["V6", "L54"],
+          ],
+        ],
+        [
+          "Fri",
+          [
+            ["E1", "L25"],
+            ["C1", "L26"],
+            ["TA1", "L27"],
+            ["TF1", "L28"],
+            ["TD1", "L29"],
+            ["-", "L30"],
+            "lunch",
+            ["E2", "L55"],
+            ["C2", "L66"],
+            ["TA2", "L57"],
+            ["TF2", "L58"],
+            ["TDD2", "L59"],
+            ["V7", "L60"],
+          ],
+        ],
+        [
+          "Sat",
+          [
+            ["X11", "L71"],
+            ["X12", "L72"],
+            ["Y11", "L73"],
+            ["Y12", "L74"],
+            ["S8", "L75"],
+            ["-", "L76"],
+            "lunch",
+            ["X21", "L77"],
+            ["Z21", "L78"],
+            ["Y12", "L79"],
+            ["W21", "L80"],
+            ["W22", "L81"],
+            ["-", "L82"],
+          ],
+        ],
+        [
+          "Sun",
+          [
+            ["Y11", "L83"],
+            ["Y12", "L84"],
+            ["X11", "L85"],
+            ["X12", "L86"],
+            ["S10", "L87"],
+            ["-", "L88"],
+            "lunch",
+            ["Y21", "L89"],
+            ["Z21", "L90"],
+            ["X21", "L91"],
+            ["W21", "L92"],
+            ["W22", "L93"],
+            ["-", "L94"],
+          ],
+        ],
+      ];
+      var userData=$("#student").val().split(",")
+
+      function removeClass(classId) {
+        $.ajax({
+          type: "POST",
+          url: "/class/" + $("#rollNo").val()+"/"+classId,
+          success: function (data) {
+            window.location.reload(false); 
+          },
+        });
+      }
+      class Timetable extends React.Component {
+        state = {
+          userData: userData,
+        };
+        styles = {
+          border: "1px solid #3c8dbc",
+          textAlign: "center",
+          verticalAlign: "middle",
+          padding: 3,
+          width: 50,
+          height:45
+        };
+        handleClick = (slot) => {
+          var elem = document.querySelectorAll(".modal");
+          var instance = M.Modal.getInstance(elem[0]);
+          $("#modalHead").text(
+            "Remove course from " + $("#modalHead").text() + slot + " slot"
+          );
+          $("#slottochange").val(slot);
+          instance.open();
+        };
+        cardstyle={
+          padding: "10px 50px",
+        };
+        render() {
+          var times = {
+            theory_start: [
+              "08:00",
+              "08:55",
+              "09:50",
+              "10:45",
+              "11:40",
+              "-",
+              "Lunch",
+              "02:00",
+              "02:55",
+              "03:50",
+              "04:45",
+              "05:40",
+              "06:35",
+            ],
+            theory_end: [
+              "08:50",
+              "09:45",
+              "10:40",
+              "11:35",
+              "12:30",
+              "-",
+              "Lunch",
+              "02:50",
+              "03:45",
+              "04:40",
+              "05:35",
+              "06:30",
+              "07:25",
+            ],
+            lab_start: [
+              "08:00",
+              "08:50",
+              "09:50",
+              "10:40",
+              "11:40",
+              "12:30",
+              "Lunch",
+              "02:00",
+              "02:50",
+              "03:50",
+              "04:40",
+              "05:40",
+              "06:30",
+            ],
+            lab_end: [
+              "08:50",
+              "09:40",
+              "10:40",
+              "11:30",
+              "12:30",
+              "01:20",
+              "Lunch",
+              "02:50",
+              "03:40",
+              "04:40",
+              "05:30",
+              "06:30",
+              "07:20",
+            ],
+          };
+          return (
+            <div className="card" style={this.cardstyle}>
+              <h4>View Time Table</h4>      
+              <hr/>
+              <table>
+              <tr>
+                <h5>Timings</h5>
+                <table>
+                  <tr>
+                    <td rowspan="2" bgcolor="#e2e2e2" style={this.styles}>
+                      THEORY
+                    </td>
+                    <td bgcolor="#e2e2e2" style={this.styles}>
+                      Start
+                    </td>
+                    {times.theory_start.map((time) => {
+                      return (
+                        <td bgcolor="#CCCCFF" style={this.styles}>
+                          {time}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  <tr>
+                    <td style={this.styles} bgcolor="#e2e2e2">
+                      End
+                    </td>
+                    {times.theory_end.map((time) => {
+                      return (
+                        <td bgcolor="#CCCCFF" style={this.styles}>
+                          {time}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  <tr>
+                    <td rowspan="2" bgcolor="#e2e2e2" style={this.styles}>
+                      LAB
+                    </td>
+                    <td bgcolor="#e2e2e2" style={this.styles}>
+                      Start
+                    </td>
+                    {times.lab_start.map((time) => {
+                      return (
+                        <td bgcolor="#99CCFF" style={this.styles}>
+                          {time}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  <tr>
+                    <td style={this.styles} bgcolor="#e2e2e2">
+                      End
+                    </td>
+                    {times.lab_end.map((time) => {
+                      return (
+                        <td bgcolor="#99CCFF" style={this.styles}>
+                          {time}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </table>
+              </tr>
+              <tr>
+                <h5>Slots</h5>
+                {slotData.map((day) => {
+                  return (
+                    <table>
+                      <tr>
+                        <td rowspan="2" bgcolor="#e2e2e2" style={this.styles}>
+                          {day[0]}
+                        </td>
+                        <td bgcolor="#e2e2e2" style={this.styles}>
+                          THEORY
+                        </td>
+                        {day[1].map((slots) => {
+                          return (
+                            <td
+                              onClick={() =>
+                                slots == "lunch" || slots[0] == "-"
+                                  ? {}
+                                  : this.handleClick(slots[0])
+                              }
+                              className="slot"
+                              bgcolor={
+                                this.state.userData.includes(slots[0])
+                                  ? "#d0fc34"
+                                  : "#fffccc"
+                              }
+                              style={this.styles}
+                            >
+                              {slots == "lunch" ? "Lunch" : slots[0]}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                      <tr>
+                        <td bgcolor="#e2e2e2" style={this.styles}>
+                          LAB
+                        </td>
+                        {day[1].map((slots) => {
+                          return (
+                            <td
+                              className="slot"
+                              onClick={() =>
+                                slots == "lunch" || slots[1] == "-"
+                                  ? {}
+                                  : this.handleClick(slots[1])
+                              }
+                              bgcolor={
+                                this.state.userData.includes(slots[1])
+                                  ? "#d0fc34"
+                                  : "#ffeca4"
+                              }
+                              style={this.styles}
+                            >
+                              {slots == "lunch" ? "Lunch" : slots[1]}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    </table>
+                  );
+                })}
+              </tr>
+            </table></div>
+          );
+        }
+      }
+      ReactDOM.render(<Timetable />, document.querySelector("#root"));
+    </script>
+    {% include "components/scripts.html" %}
+  </body>
+</html>

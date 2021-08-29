@@ -1,0 +1,41 @@
+<nav>
+  <div class="nav-wrapper">
+    <a href="{% url 'land' %}" class="brand-logo"
+      ><i class="material-icons">assistant</i>Classistant</a
+    >
+    <a href="#" data-target="mobile-demo" class="sidenav-trigger"
+      ><i class="material-icons">menu</i></a
+    >
+    <ul class="right hide-on-med-and-down">
+      {% ifequal title "Classistant - Home" %}
+      {% else %}
+      <li>
+        <a href="{%url 'courses' %}"
+          ><i class="material-icons left">library_books</i>Courses</a
+        >
+      </li>
+      <li>
+        <a href="{%url 'timetable' %}"
+          ><i class="material-icons left">list_alt</i>Timetable</a
+        >
+      </li>
+      <li>
+        <a href="{%url 'map' %}"
+          ><i class="material-icons left">location_on</i>Map</a
+        >
+      </li>
+      {% endifequal %}
+      <li>
+        <a href="{%url 'logout' %}"
+          ><i class="material-icons left">logout</i>Log out</a
+        >
+      </li>
+    </ul>
+  </div>
+</nav>
+<ul class="sidenav" id="mobile-demo">
+  <li><a href="{%url 'courses' %}">Courses</a></li>
+  <li><a href="{%url 'timetable' %}">Timetable</a></li>
+  <li><a href="{%url 'map' %}">Map</a></li>
+  <li><a href="{%url 'logout' %}">Log out</a></li>
+</ul>

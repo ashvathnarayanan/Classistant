@@ -1,0 +1,146 @@
+{% load static %} {% load tags %}
+
+<html>
+  <head>
+    {% include "components/head.html" with title="Classistant - Home" %}
+  <style>
+    td,th{
+      text-align:center;
+}
+footer {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  color:white;
+  background-color: darkcyan;
+  text-align: center;
+  z-index: 100;
+}
+body > .row{
+  vertical-align: baseline;
+  margin: 1% 3%;
+  padding: 0.5%;
+}
+h3{  
+  padding-left: 1%;
+  text-align: left;
+}
+
+  </style>
+  </head>
+  <body>
+    {% include "components/navbar.html" %}
+    <div class="row card" style="text-align: center;">
+      <h3>Explore our courses</h3>
+      <form action="{% url 'course' %}" method="post">
+        {% csrf_token %}
+        <div class="input-field col s4">
+          <i class="material-icons prefix">code</i>
+          <input
+            type="text"
+            name="course"
+            id="autocomplete-input1"
+            class="autocomplete"
+          />
+          <label for="autocomplete-input1">Search by course code</label>
+        </div>
+        <div class="input-field col s4">
+          <i class="material-icons prefix">person</i>
+          <input
+            type="text"
+            name="faculty"
+            id="autocomplete-input2"
+            class="autocomplete"
+          />
+          <label for="autocomplete-input2">Search by undertaking faculty</label>
+        </div>
+        <div class="col s1" style="margin-top: 10px;">
+          <a class="btn-floating btn-large waves-effect waves-light" style="background-color: #d8b40c;">
+            <button type="submit" style="background-color: transparent;border: none;cursor: pointer;">
+              <i class="material-icons">
+                search
+              </i>
+            </button>
+          </a>
+        </div>
+      </form>
+
+    </div>
+    <div style="margin: 50px 3%" class="card">
+      <table class="striped">
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Code</th>
+            <th>Faculty</th>
+            <th>Building</th>
+            <th>Time Slot</th>
+            <th>Students Registered</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in classes %}
+          <tr>
+            <td>{{i.course.course_name}}</td>
+            <td>{{i.course.course_id}}</td>
+            <td>{{i.faculty_name}}</td>
+            <td>{{i.building.building_name}}</td>
+            <td>{{i.time}}</td>
+            <td>{{i.total_students}}</td>
+            <td id="available">
+              {% if i in student.classes.all %} 
+              <div>
+                <span class="new badge" data-badge-caption="Registered"></span>
+              </div>
+              {% else %}
+               {% if student.classes.all|checkClash:i %}
+                <a class="tooltipped" data-position="left" data-tooltip=" {{student.classes.all|getClash:i}}">
+                  <div>
+                    <span class="new badge red" data-badge-caption="Clashed"></span>
+                  </div>
+                </a>
+                {% else %}
+                           <a
+                onclick="addStudent({{i.class_id}});"
+                class="btn-floating btn-small waves-effect waves-light darkcyan"
+                ><i class="material-icons">add</i> </a
+              >{% endif %}
+               {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <input type="hidden" id="rollNo" value="{{student.rollNo}}" />
+    </div>
+    <br><br><br>
+    <footer style="position: fixed;letter-spacing: 0.5;">
+      <div class="footer">
+        Made using Django, React, Materialize and SQL by Ashvath Narayanan with passion ❤. 
+      </div>
+    </footer>
+    {% include "components/scripts.html" %}
+    <script>
+      function addStudent(classId) {
+        $.ajax({
+          type: "POST",
+          url: "/class/" + $("#rollNo").val(),
+          data: {
+            classId: classId,
+          },
+          success: function (data) {
+            window.location.reload(false); 
+          },
+        });
+      }
+      
+  $(document).ready(function(){
+    $('.tooltipped').tooltip();
+  });
+        
+    </script>
+    <script src="{% static 'js/suggestion.js'%}"></script>
+  </body>
+</html>

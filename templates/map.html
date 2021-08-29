@@ -1,0 +1,161 @@
+{% load static %}
+<html>
+  <head>
+    {% include "components/head.html" with title="Classistant - Map" %}
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha384-VzLXTJGPSyTLX6d96AxgkKvE/LRb7ECGyTxuwtpjHnVWVZs2gp5RDjeM/tgBnVdM"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.css"
+      integrity="sha384-pmjIAcz2bAn0xukfxADbZIb3t8oRT9Sv0rvO+BR5Csr6Dhqq+nZs59P0pPKQJkEV"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.Default.css"
+      integrity="sha384-wgw+aLYNQ7dlhK47ZPK7FRACiq7ROZwgFNg0m04avm4CaXS+Z9Y7nMu8yNjBKYC+"
+      crossorigin="anonymous"
+    />
+
+    <script
+      src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"
+      integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha384-RFZC58YeKApoNsIbBxf4z6JJXmh+geBSgkCQXFyh+4tiFSJmJBt+2FbjxW7Ar16M"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/leaflet.markercluster@1.5.0/dist/leaflet.markercluster.js"
+      integrity="sha384-89yDmbSkL9reFc77m10ZbqLaUMf1sp7FAJs2oAD/rczNnY7I+17yN9KML6tpYpCk"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+            footer {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  color:white;
+  background-color: darkcyan;
+  text-align: center;
+  z-index: 100;
+}
+    </style>
+  </head>
+  <body>
+    {% include "components/navbar.html" %}
+
+    <div id="mymap"></div>
+
+    <div class="card" style="margin: -3% 5%;">
+    <center>
+      <div class="row">
+        <div class="col s10"><div class="input-field col s12">
+          <i class="material-icons prefix">code</i>
+          <input
+            type="text"
+            name="course"
+            id="autocomplete-input1"
+            class="autocomplete"
+          />
+          <label for="autocomplete-input1">Search by course code</label>
+        </div>
+        </div>
+        <div class="col s2" style="margin-top:30px ;">
+          <a onclick="cluster()" class="waves-effect waves-light btn darkcyan">
+            <i class="material-icons right">place</i>
+            Locate</a
+          >
+        </div>
+      </div>
+    </center>
+    </div>
+    <footer style="position: fixed;letter-spacing: 0.5;">
+      <div class="footer">
+        Made using Django, React, Materialize and SQL by Ashvath Narayanan with passion ❤. 
+      </div>
+    </footer>
+    <script src="{% static 'js/suggestion.js'%}"></script>
+    <script>
+      var map = L.map("mymap", {
+        center: [10.0, 5.0],
+        minZoom: 2,
+        zoom: 2,
+      });
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: ["a", "b", "c"],
+      }).addTo(map);
+
+      function cluster() {
+        $.ajax({
+          type: "POST",
+          url: "/classes-on-map/" + $("#autocomplete-input1").val(),
+          data: {},
+          success: function (data) {
+            var markers = data.data;
+            var myIcon = L.icon({
+              iconUrl: "http://127.0.0.1:8000/static/images/pin24.png",
+              iconRetinaUrl: "http://127.0.0.1:8000/static/images/pin48.png",
+              iconSize: [29, 24],
+              iconAnchor: [9, 21],
+              popupAnchor: [0, -14],
+            });
+
+            var markerClusters = L.markerClusterGroup();
+
+            for (var i = 0; i < markers.length; ++i) {
+              var popup =
+                "Course Name: <b>" +
+                markers[i].name +
+                "</b><br/>Building Name: <b>" +
+                markers[i].building_name +
+                "</b><br/>Number of student registered: <b>" +
+                markers[i].students +
+                "</b>";
+              var m = L.marker([markers[i].lat, markers[i].lng], {
+                icon: myIcon,
+              }).bindPopup(popup);
+
+              markerClusters.addLayer(m);
+            }
+
+            map.addLayer(markerClusters);
+          },
+        });
+      }
+    </script>
+
+    <!-- <script>
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          lat = position.coords.latitude;
+          lon = position.coords.longitude;
+          console.log(lat, lon);
+          document.getElementById("latitude").textContent = lat;
+          document.getElementById("longitude").textContent = lon;
+
+          const mymap = L.map("mymap").setView([lat, lon], 15);
+          const attribution =
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+          const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+          const tiles = L.tileLayer(tileUrl, { attribution });
+          tiles.addTo(mymap);
+          const marker = L.marker([lat, lon]).addTo(mymap);
+        });
+      } else {
+        console.log("geolocation not available");
+      }
+    </script> -->
+    {% include "components/scripts.html" %}
+  </body>
+</html>
