@@ -1,5 +1,3 @@
-## Course registration and time table management simplified
-
 ## Demo Video
 https://drive.google.com/file/d/1bJ6jJti-RnVNMCdYAWc94yx5YqY_Epg4/view?usp=sharing
 
@@ -16,6 +14,15 @@ https://drive.google.com/file/d/1bJ6jJti-RnVNMCdYAWc94yx5YqY_Epg4/view?usp=shari
 ![image](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![image](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 ![image](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=Leaflet&logoColor=white)
+
+## Features
+* All the requirements and deliverables from the project document are executed.
+* Apart from that the following were added.
+* Clash details are displayed to avoid selecting slots that will clash with existing time table.
+* Search classes according to both the course code as well as the faculty details if needed.
+* Displaying the groups of buildings in the college as a single cluster according to their vicinity
+* Time table is replicated in the frontend to look the same as the generic time table.
+* All fields have autocompleted feature enabled for ease of use.
 
 
 ### Course Page
